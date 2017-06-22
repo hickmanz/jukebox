@@ -203,24 +203,29 @@ html{
     color: white;
     z-index: 2;
     position: absolute;
+    display: flex;
+    flex-flow: row;
 }
 .current-song-holder.collapse .current-song-content {
     padding: 20px;
 }
-.artwork{
-    height: 100%;
-    float: left;
+.current-song-content .artwork{
+    box-shadow: 0 10px 14px rgba(0,0,0,.2), 0 4px 15px rgba(0,0,0,.2);
 }
-.artwork img{
-    height: 100%;
+.artwork{
+    height: 100%; 
+    flex: 0 1 auto;  
+
 }
 .current-song-content .details{
-    padding: 30px;
-    overflow: hidden;
+    padding-left: 30px;
     height: 100%;
+    flex-grow: 1;
+    display: flex;
+    flex-flow: column;
 }
 .current-song-holder.collapse .details {
-    padding: 20px;
+    flex-flow: row;
 }
 .current-song-content .details .song-name{
     font-size: 20px;
@@ -229,6 +234,18 @@ html{
 .current-song-content .details .song-artist{
     font-size: 16px;
     font-weight: 200;
+}
+.current-song-content .details .control-status{
+    display: flex;
+    flex-flow: column;
+    flex-grow: 2;
+    justify-content: center;
+}
+.current-song-content .details .description{
+    display: flex;
+    flex-flow: column;
+    flex-grow: 1;
+    justify-content: center;
 }
 .controls-holder {
     width: 93%;
@@ -314,10 +331,12 @@ html{
     padding-left: 20px;
     border-top: solid 1px #bbbbbb;
     background: white;
+    display:flex;
 }
 .playlist-holder li:active {
     box-shadow: 0 10px 14px rgba(0,0,0,.2), 0 4px 15px rgba(0,0,0,.2);
 }
+
 .menu-expand-holder{
     height: 100%;
     max-height: 0;
@@ -477,6 +496,9 @@ html{
     font-size: 14px;
     font-weight: 200;
 }
+.track-row:hover{
+    background: #252525;
+}
 .track-row div {
     flex: 0 0 auto;
     width: 25%;
@@ -489,6 +511,12 @@ html{
     width: 60px;
     flex: 0 0 auto;
     text-align: center;
+    color: #a0a0a0;
+}
+.track-row .add i:hover, .track-row .preview i:hover {
+    font-size: 20px;
+    cursor: pointer;
+    color: white;
 }
 .track-row .duration, .track-row .popularity {
     width: 80px;

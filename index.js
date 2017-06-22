@@ -4,6 +4,8 @@ var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var SpotifyWebApi = require('spotify-web-api-node');
 
+var currentQueue = [];
+
 app.use('/', express.static('public'));
 
 io.on('connection', function(socket){
@@ -32,7 +34,20 @@ io.on('connection', function(socket){
             });      
 
     });
+    socket.on('editQueue', function(req){
+        if(req.type == "addSong"){
+            currentQueue.push(req.data);
+            sendQueue();
+        } else if(req.type == "removeSong") {
 
+        } else if(req.type == "moveSong"){
+                
+        }
+    });
+
+    function sendQueue(){
+        io.emit('updateQueue', currentQueue);
+    }
 });
 
 var authorizationCode = 'AQCjbfmpSDfUA8remT2ukDbVFAeVTWhln4aOwSObE8CLrcBPgLiWqif6Xi7qE7d5nBkhUzi_nZh2w20sO7MxtQrYpz0BF8FjxD0cA1mcjeaVhYzkXhFsEu17PldOS2rfFURDIGtGLXscg2vSpmuzTqrAoNXD6FQEKNV0xE6hoiQwy7qU-hmn1UIfIxMBMn0fZwCvL4UnS2sIcrnqaOj-H-wxHwq7BhuCg6EmeFdSvDvtI8YwAaLoF_DuXJ_SJHQh9HaKu_tLp7Zo9bAVWxHSsL_X5qoc84KvuV5tB_d2h0veayNqeEInftXjkpAcemYNbPwxGq6XXg';
