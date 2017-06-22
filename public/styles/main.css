@@ -240,16 +240,19 @@ html{
     flex-flow: column;
     flex-grow: 2;
     justify-content: center;
+    height: 80px;
+
 }
 .current-song-content .details .description{
     display: flex;
     flex-flow: column;
     flex-grow: 1;
     justify-content: center;
+    height: 80px;
 }
 .controls-holder {
     width: 93%;
-    margin-top: 20px;
+
 }
 .controls {
     margin: 0 auto;
@@ -276,7 +279,6 @@ html{
 .play-status{
     font-size: 14px;
     font-weight: 200;
-    margin-top: 40px;
 }
 .statusBar-holder {
     width: calc(100% - 150px);
