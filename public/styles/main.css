@@ -249,6 +249,8 @@ html{
     flex-grow: 0;
     justify-content: center;
     height: 80px;
+}
+.current-song-holder.collapse .details .description{
     width: 30%;
 }
 .controls-holder {

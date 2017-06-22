@@ -22,7 +22,7 @@ $(function () {
     });
     socket.on('updateQueue', function(queue){
         //this
-
+        
     });
     socket.on('artistSrchResp',function(data){
         var i;
@@ -80,7 +80,11 @@ $(function () {
     $('#search').click(function () { // When arrow is clicked
         showSearch();
     });
-
+    $('.current-song-content').click(function () { // When arrow is clicked
+        if(playlistShown == false){
+            showPlaylist();
+        }
+    });
     $( "#sortable" ).sortable();
     $( "#sortable" ).disableSelection();
 });
@@ -89,6 +93,12 @@ function showSearch() {
     $(".menu-expand-holder").addClass("expand");
     $(".current-song-holder").addClass("collapse");
     playlistShown = false;
+}
+
+function showPlaylist() {
+    $(".menu-expand-holder").removeClass("expand");
+    $(".current-song-holder").removeClass("collapse");
+    playlistShown = true;
 }
 
 function getArtistDiv(data){
