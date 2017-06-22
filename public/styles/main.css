@@ -280,6 +280,7 @@ html{
     font-size: 14px;
     font-weight: 200;
     display: flex;
+    align-items: center;
 }
 .statusBar-holder {
     width: calc(100% - 150px);
