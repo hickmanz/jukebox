@@ -246,13 +246,13 @@ html{
 .current-song-content .details .description{
     display: flex;
     flex-flow: column;
-    flex-grow: 1;
+    flex-grow: 0;
     justify-content: center;
     height: 80px;
+    width: 30%;
 }
 .controls-holder {
-    width: 93%;
-
+    margin-top: 15px;
 }
 .controls {
     margin: 0 auto;
@@ -279,6 +279,7 @@ html{
 .play-status{
     font-size: 14px;
     font-weight: 200;
+    display: flex;
 }
 .statusBar-holder {
     width: calc(100% - 150px);
@@ -288,6 +289,7 @@ html{
     height: 10px;
     border-radius: 5px;
     cursor: pointer;
+    flex-grow: 1;
 }
 .statusBar-empty{
     background: grey;
