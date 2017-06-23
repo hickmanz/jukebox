@@ -21,8 +21,13 @@ $(function () {
         console.dir(data);
     });
     socket.on('updateQueue', function(queue){
-        //this
-        
+        $(".queue").empty();
+        for (var i=0; i < queue.length; i++) {
+            var li = $("<li />");
+            li.html(getPlaylistDiv(queue[i]));
+            li.attr("data-trackid", queue[i].id);
+            $(".queue").append(li);
+        }
     });
     socket.on('artistSrchResp',function(data){
         var i;
@@ -85,7 +90,26 @@ $(function () {
             showPlaylist();
         }
     });
-    $( "#sortable" ).sortable();
+    $( "#sortable" ).sortable({
+        start: function(e, ui) {
+            // creates a temporary attribute on the element with the old index
+            $(this).attr('data-previndex', ui.item.index());
+        },
+        update: function(e, ui) {
+            // gets the new and old index then removes the temporary attribute
+            var newIndex = ui.item.index();
+            var oldIndex = $(this).attr('data-previndex');
+            var req = {};
+            req.type = "moveSong";
+            req.data = {};
+            req.data.newIndex = newIndex;
+            req.data.oldIndex = oldIndex;
+            req.data.trackId = ui.item.data('trackid');
+            socket.emit('editQueue', req);
+            $(this).removeAttr('data-previndex');
+
+        }
+    });
     $( "#sortable" ).disableSelection();
 });
 
@@ -144,4 +168,32 @@ function getTrackDiv(data, index){
     var duration = min + ':' + sec;
 
     return '<li class="track-row"><div class="add"><i class="icon-plus" data-type="track" data-index=' + index + '></i></div><div class="preview"><i class="icon-headphones"></i></div><div class="title">' + data.name + '</div><div class="artist">' + artists + '</div><div class="album">' + data.album.name + '</div><div class="duration">' + duration + '</div><div class="popularity">' + data.popularity + '</div></li>';
+}
+function getPlaylistDiv(data){
+    var imageUrl
+    var artists = "";
+    if (data.album.images.length < 0){
+        imageUrl = "";
+    } else {
+        imageUrl = data.album.images[0].url;
+    }
+    for (i=0; i < data.artists.length; i++){
+        if (i < data.artists.length - 1){
+            artists += data.artists[i].name + ", "; 
+        } else {
+            artists += data.artists[i].name
+        }
+    }
+
+    return `<img class="artwork" src="` + imageUrl + `"/>
+                <div class="details">
+                    <div class="description">
+                        <div class="song-name">
+                            ` + data.name + `
+                        </div>
+                        <div class="song-artist">
+                            ` + artists + `
+                        </div>
+                    </div>
+                </div>`;
 }

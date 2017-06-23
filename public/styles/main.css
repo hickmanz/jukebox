@@ -113,7 +113,7 @@ html{
     background: rgb(47, 47, 47);
     position: relative;
     height: 100%;
-    width: 300px;
+    width: 260px;
     padding: 40px;
     color: white;
     float: left;
@@ -185,7 +185,7 @@ html{
 .current-song-background{
     width: 110%;
     height: 110%;
-    background-image: url('https://i.scdn.co/image/8e6e7ebac1d649d5f417d10b3e0284b464a74cd5');
+    background-image: url('https://i.scdn.co/image/9e54851f349d1eaf9b7bb3a48ae611c917935750');
     background-size: 110%;
     background-position: center;
     filter: blur(10px);
@@ -223,6 +223,7 @@ html{
     flex-grow: 1;
     display: flex;
     flex-flow: column;
+    margin-right: 6%;
 }
 .current-song-holder.collapse .details {
     flex-flow: row;
@@ -259,7 +260,7 @@ html{
 .controls {
     margin: 0 auto;
     display: table;
-    font-size: 28px;
+    font-size: 25px;
 }
 .controls I:hover {
     color: #c84b4c;
@@ -343,7 +344,30 @@ html{
 .playlist-holder li:active {
     box-shadow: 0 10px 14px rgba(0,0,0,.2), 0 4px 15px rgba(0,0,0,.2);
 }
-
+.playlist .details {
+    padding-left: 30px;
+    height: 100%;
+    flex-grow: 1;
+    display: flex;
+    flex-flow: column;
+    margin-right: 6%;
+}
+.playlist .details .description {
+    display: flex;
+    flex-flow: column;
+    flex-grow: 0;
+    justify-content: center;
+    height: 90px;
+}
+.playlist .details .song-name {
+    font-size: 17px;
+    font-weight: 300;
+    color: black;
+}
+.playlist .details .song-artist {
+    font-size: 13px;
+    font-weight: 300;
+}
 .menu-expand-holder{
     height: 100%;
     max-height: 0;

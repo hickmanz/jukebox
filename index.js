@@ -9,7 +9,9 @@ var currentQueue = [];
 app.use('/', express.static('public'));
 
 io.on('connection', function(socket){
-  console.log('a user connected');
+    console.log('a user connected');
+
+    socket.emit('updateQueue', currentQueue);
 
     socket.on('search', function(data){
         console.log('search term: ' + data);
@@ -41,12 +43,28 @@ io.on('connection', function(socket){
         } else if(req.type == "removeSong") {
 
         } else if(req.type == "moveSong"){
-                
+            moveSong(req);
         }
     });
 
     function sendQueue(){
         io.emit('updateQueue', currentQueue);
+    }
+
+    function moveSong(req){
+        var currentIndex = currentQueue.findIndex(x => x.id == req.data.trackId);
+        var offset = req.data.oldIndex - currentIndex;
+        var setIndex = req.data.newIndex - offset;
+
+        if (setIndex >= currentQueue.length) {
+            var k = setIndex - currentQueue.length;
+            while ((k--) + 1) {
+                currentQueue.push(undefined);
+            }
+        }
+        currentQueue.splice(setIndex, 0, currentQueue.splice(currentIndex, 1)[0]);
+
+        sendQueue();
     }
 });
 
@@ -56,6 +74,8 @@ var spotifyApi = new SpotifyWebApi({
   clientSecret : 'c935d0a44207400d994571277722a095',
   redirectUri : 'http://westworld:3000/'
 });
+
+
 
 clientCodeGrant();
 
