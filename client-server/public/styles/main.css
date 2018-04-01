@@ -151,6 +151,7 @@ html{
     margin: 0 auto;
 }
 .activity-holder{
+    display:none;
     width: 275px;
     float: right;
     height: 100%;
@@ -177,18 +178,20 @@ html{
     height: 250px;
     position: relative;
     overflow: hidden;
-    max-height: 250px;
+    max-height: 28%;
+    min-height: 160px;
 }
 .current-song-holder.collapse {
     max-height: 120px;
+    min-height: 0px;
 }
 .current-song-background{
     width: 110%;
     height: 110%;
-    background-image: url('https://i.scdn.co/image/9e54851f349d1eaf9b7bb3a48ae611c917935750');
+    background-image: url('https://i.scdn.co/image/ae66cbcb48eb496ef4bf6bc38b604e850d2ed68d');
     background-size: 110%;
     background-position: center;
-    filter: blur(10px);
+    filter: blur(8px);
     -webkit-filter: blur(10px);
     z-index: 1;
     position: absolute;
@@ -230,10 +233,10 @@ html{
 }
 .current-song-content .details .song-name{
     font-size: 20px;
-    font-weight: 300;
+    font-weight: 400;
 }
 .current-song-content .details .song-artist{
-    font-size: 16px;
+    font-size: 15px;
     font-weight: 200;
 }
 .current-song-content .details .control-status{
@@ -312,6 +315,8 @@ html{
     z-index: 2;
     left: -65%;
     cursor: pointer;
+    -webkit-transition: left 0.5s; /* Safari */
+    transition: left 0.5s;
 }
 #dragDot {
     height: 15px;
@@ -334,7 +339,7 @@ html{
     font-size: 22px;
 }
 .playlist-holder li {
-    height: 90px;
+    height: 80px;
     padding: 10px;
     padding-left: 20px;
     border-top: solid 1px #bbbbbb;
@@ -360,12 +365,12 @@ html{
     height: 90px;
 }
 .playlist .details .song-name {
-    font-size: 17px;
-    font-weight: 300;
+    font-size: 15px;
+    font-weight: 400;
     color: black;
 }
 .playlist .details .song-artist {
-    font-size: 13px;
+    font-size: 11px;
     font-weight: 300;
 }
 .menu-expand-holder{
@@ -383,7 +388,8 @@ html{
     padding-left: 20px;
     padding-right: 20px;
     position: relative;
-    overflow: auto;
+    overflow-y: auto;
+    overflow-x: hidden;
     height: 100%;
 }
 .search-content-holder{
@@ -503,7 +509,7 @@ html{
     top: 50px;
     width: 100%;
     flex: 0 0 auto;
-    height: 202px;
+    padding-bottom: 25px;
 }
 .track-holder-row h1 {
     font-size: 22px;
@@ -565,3 +571,23 @@ html{
 .track-row i {
     font-size: 16px;
 }
+/* width */
+::-webkit-scrollbar {
+    width: 15px;
+}
+
+::-webkit-scrollbar-track-piece:start {
+    background: transparent url('../images/background/transparent.png') repeat-y !important;
+}
+
+::-webkit-scrollbar-track-piece:end {
+    background: transparent url('../images/background/transparent.png') repeat-y !important;
+}
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: rgba(129, 129, 129, 0.589); 
+    border-radius: 0px;
+}
+#search-outter::-webkit-scrollbar * {
+    background:transparent;
+  }

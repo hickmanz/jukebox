@@ -1,0 +1,26 @@
+<template class="task-template">
+    <div id="connect-modal" class="connect modal">
+        <div class="heading">
+            <p>
+                Connect to calipers
+            </p>
+        </div>
+        <div class="content">
+            
+            Select port: 
+            <div class="select">
+                <select id="portNumber" class="input">
+                    <option value="" disabled selected> Port</option>
+                </select>
+                <div class="select__arrow"></div>
+            </div>
+            <div class="button-holder">
+                <a id="connect-calipers" class="btn-green btn">Connect <i class="icon-arrow_forward"></i></a>
+            </div> 
+
+            <div id="connection-error">
+                
+            </div>
+        </div>
+    </div>
+</template>

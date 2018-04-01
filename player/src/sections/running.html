@@ -1,0 +1,35 @@
+<template class="task-template">
+    <div id="running-modal" class="running modal">
+            <div class="heading">
+                <p>
+                   Running
+                </p>
+            </div>
+            <div class="holder">
+                <div class="col col30">
+                    <div class="content">
+                        <div class="label">
+                            Deflection: 
+                        </div>
+                        <div id="currentDeflection-running" class="red-val" style=" width: 42px;text-align: right;">
+                            0
+                        </div>
+                        <div class="units bold-units">
+                            mm
+                        </div>
+
+                    </div>
+                    <div class="button-holder" style="justify-content:left;">
+                            <a id="stop-test" class="btn-red btn">Finish</a>
+                    </div> 
+                </div>
+                <div class="col col70">
+                    <div class='graph-holder'>
+                        <canvas id="myChart" class="graph" ></canvas>
+                    </div>
+                </div>
+                
+            </div>
+
+        </div>
+    </template>

@@ -1,0 +1,83 @@
+<template class="task-template">
+    <div id="test-setup-modal" class="test-setup modal">
+            <div class="heading">
+                <p>
+                   Test setup
+                </p>
+            </div>
+            <div class="holder">
+                <div class="col">
+                    <div class="content">
+                        <div class="label">
+                            Deflection: 
+                        </div>
+                        <div id="currentDeflection" class="red-val" style=" width: 42px;text-align: right;">
+                            0
+                        </div>
+                        <div class="units bold-units">
+                            mm
+                        </div>
+                        <div class="button-holder">
+                            <a id="zero-calipers" class="icon-zero btn" style="font-size:20px;cursor:pointer;"></a>
+                        </div> 
+                    </div>
+                    <div class="content">
+                        <div class="label">
+                            Type: 
+                        </div>
+                        <div class="select">
+                            <select id="testType" class="input">
+                                <option value="" disabled selected>Select type</option>
+                                <option value="torsion"> Torsion </option>
+                                <option value="compression"> Compression </option>
+                                <option value="tension"> Tension </option>
+                            </select>
+                            <div class="select__arrow"></div>
+                        </div>
+                    </div>
+                    <div class="content" id="torque-arm-section" style="visibility:hidden;">
+                        <div class="label">   
+                            Torque Arm: 
+                        </div>
+                        <input type="number" id="torque-arm-length" name="torque-arm-length" class="red-val input torque-arm-length">
+                        </input>
+                        <div class="torue-arm-units bold-units">
+                            mm
+                        </div>
+
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="content">
+                        <div class="label">
+                            Force Units: 
+                        </div>
+                        <div class="select">
+                            <select id="forceUnitsSelect" class="input">
+                                <option value="" disabled selected>Units</option>
+                                <option value="lbf"> lbf </option>
+                                <option value="N"> N </option>
+                            </select>
+                            <div class="select__arrow"></div>
+                        </div>
+                    </div>
+                    <div class="content">
+                            <div class="label">
+                                Force Start: 
+                            </div>
+                            <input type="number" id="force-start-value" value=0.1 class="red-val input force-start-value">
+                            </input>
+                            <div id="force-units" class="bold-units">
+                                
+                            </div>
+
+                    </div>
+
+                </div>
+                
+            </div>
+            <div class="button-holder" style="justify-content:left;">
+                    <a id="start-test" class="btn-green btn">Start <i class="icon-arrow_forward"></i></a>
+            </div> 
+        </div>
+    </template>

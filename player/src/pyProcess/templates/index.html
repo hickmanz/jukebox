@@ -1,0 +1,30 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>python-socketio test</title>
+    <script type="text/javascript" src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.slim.js"></script>
+    <script type="text/javascript" charset="utf-8">
+        $(document).ready(function(){
+            namespace = '/test';
+            var socket = io.connect('http://' + document.domain + ':' + location.port + namespace);
+            socket.on('connect', function() {
+                console.log('connected')
+                socket.emit('clientEvent', {data: 'Log page connected!'});
+            });
+            socket.on('disconnect', function() {
+                $('#log').append('<br>Disconnected');
+            });
+            socket.on('logMessage', function(msg) {
+                $('#log').append('<br>Received: ' + msg.data);
+                console.dir(msg.extra);
+            });
+        });
+    </script>
+</head>
+<body>
+    <h1>Zaqotron python log</h1>
+    <h2>Receive:</h2>
+    <div><p id="log"></p></div>
+</body>
+</html>

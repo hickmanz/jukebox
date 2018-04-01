@@ -1,0 +1,89 @@
+{
+  "name": "zaqify",
+  "productName": "Zaqify",
+  "version": "0.0.1",
+  "description": "May the force be with you",
+  "main": "src/main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "electron-forge start",
+    "package": "electron-forge package",
+    "make": "electron-forge make",
+    "publish": "electron-forge publish",
+    "build-python": "cd ./pyProcess && pyinstaller ./process.py"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "babel-plugin-transform-async-to-generator": "^6.24.1",
+    "babel-preset-env": "^1.6.0",
+    "babel-preset-react": "^6.24.1",
+    "electron-forge": "^3.2.0",
+    "electron-prebuilt-compile": "1.7.5"
+  },
+  "dependencies": {
+    "babel-runtime": "^6.26.0",
+    "dateformat": "^3.0.2",
+    "electron": "^1.8.4",
+    "electron-args": "^0.1.0",
+    "electron-compile": "^6.4.1",
+    "electron-is-dev": "^0.3.0",
+    "electron-settings": "^3.1.1",
+    "fs-extra": "^4.0.3",
+    "jquery": "^3.2.1",
+    "nedb": "^1.8.0",
+    "socket.io-client": "^2.0.4",
+    "tmp": "0.0.33",
+    "winreg": "^1.2.4"
+  },
+  "config": {
+    "forge": {
+      "make_targets": {
+        "win32": [
+          "squirrel"
+        ],
+        "darwin": [
+          "zip"
+        ],
+        "linux": [
+          "deb",
+          "rpm"
+        ]
+      },
+      "electronPackagerConfig": {
+        "overwrite": true,
+        "asar": false,
+        "icon": "src/assets/icons/win/icon.ico",
+        "prune": true,
+        "out": "release-builds",
+        "win32metadata": {
+          "ProductName": "Zaqotron",
+          "CompanyName": "Mixer",
+          "FileDescription": "ZH"
+        }
+      },
+      "electronWinstallerConfig": {
+        "name": "zaqotron",
+        "authors": "Zackary Hickman",
+        "noMsi": true,
+        "asar": true,
+        "extraResources": [
+          "src/pyProcess/*"
+        ],
+        "icon": "src/assets/icons/win/icon.ico",
+        "loadingGif": "src/assets/gif/loading.gif",
+        "iconUrl": "http://zaqotron.zackaryhickman.com/icon.ico",
+        "setupIcon": "src/assets/icons/win/icon.ico"
+      },
+      "electronInstallerDebian": {},
+      "electronInstallerRedhat": {},
+      "github_repository": {
+        "owner": "hickmanz",
+        "name": "jukebox"
+      },
+      "windowsStoreConfig": {
+        "packageName": ""
+      }
+    }
+  }
+}

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Zaqotron - Get CSV</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
+
+    <link rel="stylesheet" href="../assets/css/global.less">
+
+  </head>
+  <body>
+        Get force CSV file.
+        <div class="button-holder">
+            <a id="select-directory" class="btn-green btn">Select file</a>
+        </div> 
+        <div id="selected-file">
+
+        </div>
+        <div class="button-holder" style="justify-content:left;">
+            <a id="chose-file" class="btn-green btn inactive">Continue <i class="icon-arrow_forward"></i></a>
+    </div> 
+  </body>
+  <script>
+    var $ = require('jquery');
+    const ipc = require('electron').ipcRenderer;
+    const remote = require('electron').remote; 
+
+    var selectedFile;
+
+    document.onreadystatechange = function () {
+      if (document.readyState == "complete") {
+        const selectDirBtn = document.getElementById('select-directory');
+        const choseFileBtn = document.getElementById('chose-file');
+
+        selectDirBtn.addEventListener('click', function (event) {
+          ipc.send('open-file-dialog');
+        });
+
+        choseFileBtn.addEventListener('click', function (event) {
+          ipc.send('file-select', selectedFile);
+          const window = remote.getCurrentWindow();
+          window.close();
+        });
+
+      }
+    }
+
+    ipc.on('selected-directory', function (event, path) {
+      document.getElementById('selected-file').innerHTML = `You selected: ${path}`;
+      selectedFile = path;
+      document.getElementById('chose-file').classList.remove('inactive');
+    })
+
+  </script>
+</html>

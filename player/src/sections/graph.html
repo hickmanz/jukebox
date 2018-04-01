@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Zaqotron</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
+
+    <link rel="stylesheet" href="../assets/css/global.less">
+  </head>
+  <body>
+    <div id="title-bar">
+        <div class="logo"> 
+            <img src="../assets/logo/logo-long.png">
+        </div>
+        <div id="title-bar-btns">
+            <a id="min-btn" class="icon-min btn"></a>
+            <a id="max-btn" class="icon-max btn"></a>
+            <a id="close-btn" class="icon-close btn"></a>
+        </div>       
+    </div>
+    <div id="grapher-modal" class="grapher modal is-shown">
+        <div class="heading">
+
+        </div>
+        <div class="holder">
+            <div class="col col30">
+                <div class="content" id="">
+                </div>
+                <div class="button-holder" style="justify-content:left; padding-bottom:20px;">
+                        <a id="export-data" class="btn-green btn">Export Data <i class="icon-document-file-xlsx2" style="
+                            font-size: 26px;
+                        "></i></a>
+                </div>
+                <div class="button-holder" style="justify-content:left; padding-bottom:20px;">
+                        <a id="export-graph" class="btn-green btn">Export Graph <i class="icon-document-file-png2" style="
+                            font-size: 26px;
+                        "></i></a>
+                </div> 
+                <div class="button-holder" style="justify-content:left; padding-bottom:20px;">
+                        <a id="close-grapher" class="btn-red btn">Close <i class="icon-arrow_forward"></i></a>
+                </div>  
+            </div>
+            <div class="col col70" style="-webkit-app-region: no-drag;">
+                <div id="graph-holder" class='graph-holder' style="background:white;">
+                    <canvas id="dataChart" class="graph" ></canvas>
+                </div>
+            </div>
+            
+        </div>
+
+    </div>
+</body>
+<script>
+    require('../assets/grapher.js')
+</script>
+</html>
