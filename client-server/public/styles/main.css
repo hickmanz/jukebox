@@ -26,82 +26,83 @@ html{
       height: 100%;
 }
 @font-face {
-  font-family: 'icomoon';
-  src:  url('fonts/icomoon.eot?a75ghj');
-  src:  url('fonts/icomoon.eot?a75ghj#iefix') format('embedded-opentype'),
-    url('fonts/icomoon.ttf?a75ghj') format('truetype'),
-    url('fonts/icomoon.woff?a75ghj') format('woff'),
-    url('fonts/icomoon.svg?a75ghj#icomoon') format('svg');
-  font-weight: normal;
-  font-style: normal;
-}
-
-[class^="icon-"], [class*=" icon-"] {
-  /* use !important to prevent issues with browser extensions that change fonts */
-  font-family: 'icomoon' !important;
-  speak: none;
-  font-style: normal;
-  font-weight: normal;
-  font-variant: normal;
-  text-transform: none;
-  line-height: 1;
-
-  /* Better Font Rendering =========== */
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-.icon-chevron-down:before {
-  content: "\e900";
-}
-.icon-chevron-left:before {
-  content: "\e901";
-}
-.icon-chevron-right:before {
-  content: "\e902";
-}
-.icon-chevron-up:before {
-  content: "\e903";
-}
-.icon-clock:before {
-  content: "\e906";
-}
-.icon-headphones:before {
-  content: "\e907";
-}
-.icon-heart:before {
-  content: "\e908";
-}
-.icon-play2:before {
-  content: "\e909";
-}
-.icon-plus:before {
-  content: "\e90a";
-}
-.icon-cog:before {
-  content: "\e904";
-}
-.icon-search:before {
-  content: "\e905";
-}
-.icon-equalizer:before {
-  content: "\e993";
-}
-.icon-play:before {
-  content: "\ea1c";
-}
-.icon-pause:before {
-  content: "\ea1d";
-}
-.icon-skip-back:before {
-  content: "\ea23";
-}
-.icon-skip-forward:before {
-  content: "\ea24";
-}
-.icon-spotify:before {
-  content: "\ea94";
-}
+    font-family: 'icomoon';
+    src:  url('fonts/icomoon.eot?2phi79');
+    src:  url('fonts/icomoon.eot?2phi79#iefix') format('embedded-opentype'),
+      url('fonts/icomoon.ttf?2phi79') format('truetype'),
+      url('fonts/icomoon.woff?2phi79') format('woff'),
+      url('fonts/icomoon.svg?2phi79#icomoon') format('svg');
+    font-weight: normal;
+    font-style: normal;
+  }
+  
+  [class^="icon-"], [class*=" icon-"] {
+    /* use !important to prevent issues with browser extensions that change fonts */
+    font-family: 'icomoon' !important;
+    speak: none;
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+  
+    /* Better Font Rendering =========== */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  
+  .icon-skip-forward:before {
+    content: "\e90c";
+  }
+  .icon-skip-back:before {
+    content: "\e90b";
+  }
+  .icon-chevron-down:before {
+    content: "\e900";
+  }
+  .icon-chevron-left:before {
+    content: "\e901";
+  }
+  .icon-chevron-right:before {
+    content: "\e902";
+  }
+  .icon-chevron-up:before {
+    content: "\e903";
+  }
+  .icon-clock:before {
+    content: "\e906";
+  }
+  .icon-headphones:before {
+    content: "\e907";
+  }
+  .icon-heart:before {
+    content: "\e908";
+  }
+  .icon-play22:before {
+    content: "\e909";
+  }
+  .icon-plus:before {
+    content: "\e90a";
+  }
+  .icon-cog:before {
+    content: "\e904";
+  }
+  .icon-search:before {
+    content: "\e905";
+  }
+  .icon-equalizer:before {
+    content: "\e993";
+  }
+  .icon-spotify:before {
+    content: "\ea94";
+  }
+  .icon-play:before {
+    content: "\ea15";
+  }
+  .icon-pause:before {
+    content: "\ea16";
+  }
+  
 
 
 .main{
@@ -199,7 +200,7 @@ html{
     top: -20px;
 }
 .current-song-content{
-    background: rgba(45, 45, 45, 0.69);
+    background: rgba(45, 45, 45, 0.45);
     width: 100%;
     padding: 30px;
     height: 100%;
@@ -258,16 +259,29 @@ html{
     width: 30%;
 }
 .controls-holder {
-    margin-top: 15px;
+    margin-bottom: -8px;
+    margin-top: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 .controls {
     margin: 0 auto;
-    display: table;
+    display: flex;
     font-size: 25px;
+    justify-content: center;
+    align-items: center;
 }
 .controls I:hover {
     color: #c84b4c;
     cursor: pointer;    
+}
+.controls i {
+    padding-right: 10px;
+    padding-left: 10px;
+}
+.controls .icon-play, .controls .icon-pause{
+    font-size: 37px;
 }
 
 #currentTime{
@@ -293,8 +307,8 @@ html{
     display: inline-block;
     position: relative;
     overflow-x: hidden;
-    height: 10px;
-    border-radius: 5px;
+    height: 8px;
+    border-radius: 3px;
     cursor: pointer;
     flex-grow: 1;
 }
@@ -310,10 +324,10 @@ html{
     background: #e2e2e2;
     width: 100%;
     height: 100%;
-    border-radius: 5px;
+    border-radius: 3px;
     position: absolute;
     z-index: 2;
-    left: -65%;
+    left: -100%;
     cursor: pointer;
     -webkit-transition: left 0.5s; /* Safari */
     transition: left 0.5s;
@@ -384,6 +398,15 @@ html{
     max-height: calc(100% - 120px);
 }
 #search-outter { 
+    padding-top: 20px;
+    padding-left: 20px;
+    padding-right: 20px;
+    position: relative;
+    overflow-y: auto;
+    overflow-x: hidden;
+    height: 100%;
+}
+#recent-outter { 
     padding-top: 20px;
     padding-left: 20px;
     padding-right: 20px;
@@ -590,4 +613,17 @@ html{
 }
 #search-outter::-webkit-scrollbar * {
     background:transparent;
+  }
+  .toast {
+    padding: 15px 20px;
+    color: #fff;
+    background: rgba(0,0,10,0.55);
+    display: inline-block;
+    position: fixed;
+    right: 15px;
+    opacity: 0;
+    z-index: 10;
+    transition: all 0.4s ease-out;
+    font-size: 14px;
+    font-weight: 200;
   }

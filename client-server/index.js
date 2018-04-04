@@ -6,23 +6,31 @@ var io = require('socket.io')(http);
 const path = require('path')
 var SpotifyWebApi = require('spotify-web-api-node');
 
+
 const Datastore = require('nedb');
 const db = new Datastore({ filename: path.join('./', 'main.db'), autoload: true, timestampData: true  });
 
-var currentQueue = [];
+var currentQueue = []
+var historyQueue = []
 
 app.use('/', express.static('public'))
 
 var client_id = 'fd4b30f8ddd544ba8fcedd8d99e80e50'
 var client_secret = 'c935d0a44207400d994571277722a095'
 var redirect_uri = 'http://localhost:3000/callback'
-var auth_scope = 'streaming user-read-birthdate user-read-email user-read-private user-read-playback-state user-modify-playback-state'
+var auth_scope = 'streaming user-read-birthdate user-read-recently-played user-read-email user-read-private user-read-playback-state user-modify-playback-state'
 var access_token;
 var refresh_token;
 
+var playerTimer
+
 var player = {
     volume: 70,
-    state: "",
+    state: "paused",
+    duration: 0,
+    position: 0,
+    timeLeft: 50000,
+    lastUpdate: 0,
     currentPlaying: null,
     playback: null
 }
@@ -128,11 +136,13 @@ function authCodeGrant(authorizationCode){
 function checkToken(){
     return new Promise(function (fulfill, reject){
         var timeToExp = Math.floor(tokenData.spotifyTokenExpirationEpoch - new Date().getTime() / 1000)
+        console.log(timeToExp)
         if ( timeToExp < 500){
             spotifyApi.refreshAccessToken().then(function(data) {
                 tokenData.spotifyTokenExpirationEpoch = (new Date().getTime() / 1000) + data.body['expires_in'];
                 console.log('Refreshed token. It now expires in ' + Math.floor(tokenData.spotifyTokenExpirationEpoch - new Date().getTime() / 1000) + ' seconds!');
                 tokenData.access_token = data.body['access_token']
+                spotifyApi.setAccessToken(tokenData.access_token);
                 db.update({_id: 'tokenData'}, tokenData, {}, function(){
                 })
                 io.local.emit('updateTokenData', tokenData)
@@ -157,6 +167,14 @@ io.on('connection', function(socket){
             fn(tokenData)
         })
     })
+    socket.on('get-recently-played', function(){
+        spotifyApi.getMyRecentlyPlayedTracks({limit: 50}).then(data => {
+            console.dir(data);
+            socket.emit('recently-played', data)
+        }, err =>{
+            console.error(err);
+        });
+    })
     socket.on('player-update', function(data){
         //calc and let everyone know whats up
     })
@@ -165,7 +183,7 @@ io.on('connection', function(socket){
         player.device_id = [data]
         player.socket = socket.id
         console.dir(player)
-
+        console.log('player-ready')
         checkToken().then(function(resp){
             spotifyApi.transferMyPlayback({ deviceIds: player.device_id, play: true}).then(state => {
                 console.dir(state);
@@ -217,26 +235,108 @@ io.on('connection', function(socket){
     })
     socket.on('editQueue', function(req){
         if(req.type == "addSong"){
-            console.log('add song')
-            if (player.currentPlaying == null){
-                player.currentPlaying = req.data
-                playSong(req.data.uri)
-
-            } else {
             currentQueue.push(req.data);
+            console.log('add song')
+            if (player.currentPlaying == null ){
+                playNextSong()
+            } else if (player.state == "paused" && currentQueue.length == 1) {
+                console.log('this one')
+                playNextSong()
+            } else {
                 sendQueue();
             }
         } else if(req.type == "removeSong") {
+            //remove by id
+            var rmIndex = findIndexInData(currentQueue, 'id', req.data)
+            currentQueue.splice(rmIndex, 1)
+            sendQueue()
 
         } else if(req.type == "moveSong"){
             moveSong(req);
         }
     });
     socket.on('player_state_changed', function(data){
-        player.playback = data
-        //update timer - send new data to clients
-        io.emit('update-player', player)
+        if(data !== null){
+            player.playback = data
+            player.position = data.position
+            player.lastUpdate = 0
+            updatePlayerTime() 
+            if(data.paused == true){
+                if(player.timeLeft < 2000){
+                    playNextSong()
+                }
+                player.state = 'paused'
+            } else {
+                player.state = 'playing'
+            }
+            //update timer - send new data to clients
+            io.emit('update-player', player)
+        }
     }) 
+    socket.on('next-song', function(data){
+        playNextSong()
+    })
+    socket.on('previous-song', function(){
+        nextSong = historyQueue.shift()
+        player.currentPlaying = nextSong
+        player.duration = nextSong.duration_ms
+        playSong(nextSong.uri)
+    })
+    socket.on('play', function(){
+        if (player.state == "paused"){
+            if (io.sockets.connected[player.socket]) {
+                io.sockets.connected[player.socket].emit('toggle-play')
+            }
+        }
+    })
+    socket.on('pause', function(){
+        if(player.state == "playing"){
+            if (io.sockets.connected[player.socket]) {
+                io.sockets.connected[player.socket].emit('toggle-play')
+            }
+        }
+    })
+    socket.on('scrub', function(data){
+        if (io.sockets.connected[player.socket]) {
+            io.sockets.connected[player.socket].emit('seek', data)
+        }
+    })
+    function updatePlayerTime(){
+        clearInterval(playerTimer)
+        if(player.duration !== 0 ){
+
+            if (player.state == "playing"){
+                playerTimer = setInterval(function(){   
+                    player.position += 500
+                    player.timeLeft = player.duration - player.position
+                    player.lastUpdate += 500
+                    if(player.lastUpdate > 15000){
+                        player.lastUpdate = 0
+                        if (io.sockets.connected[player.socket]) {
+                            io.sockets.connected[player.socket].emit('time-check')
+                        }
+                    }
+                    if(player.duration - player.position < 500){
+                        playNextSong()
+                    }
+                }, 500);
+            }   
+        }  
+    }
+    function playNextSong(){
+        historyQueue.unshift(player.currentPlaying)
+        if(historyQueue.length > 20){
+            historyQueue.pop()
+        } 
+        player.timeLeft = 500000
+        if (currentQueue.length > 0){
+            nextSong = currentQueue.shift()
+            player.currentPlaying = nextSong
+            player.duration = nextSong.duration_ms
+            sendQueue()
+            playSong(nextSong.uri)
+        }
+    }
     function playSong(uri){
         console.log(uri)
         checkToken().then(function(wasUpdated){
@@ -268,11 +368,19 @@ io.on('connection', function(socket){
     }
     function setPlayerVolume(socket){
         socket.emit('set-volume', player.volume)
+
     }
 
 });
 
-
+function findIndexInData(data, property, value) {
+    for(var i = 0, l = data.length ; i < l ; i++) {
+      if(data[i][property] === value) {
+        return i;
+      }
+    }
+    return -1;
+  }
 http.listen(3000, function () {
   console.log('Example app listening on port 3000!')
 })

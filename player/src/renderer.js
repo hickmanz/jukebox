@@ -36,6 +36,13 @@ var player_id;
     // Playback status updates
     player.addListener('player_state_changed', state => { 
       console.log(state);
+      if(state == null){
+        player.connect().then(success => {
+          if (success) {
+            console.log('The Web Playback SDK successfully connected to Spotify!');
+          }
+        })
+      }
       socket.emit('player_state_changed', state) 
     });
 
@@ -63,24 +70,50 @@ const socket = require('socket.io-client')(serverAddr);
 
 socket.on('connect', function(){
   console.log('connected to server')
-  if (player_id !== null){
-    socket.emit('player-ready', player_id)
-  }
+  player.connect().then(success => {
+    if (success) {
+      console.log('The Web Playback SDK successfully connected to Spotify!');
+    } else {
+      console.log('new connect fail')
+      socket.emit('player-ready', player_id)
+
+    }
+  })
 
 });
 
 socket.on('updateTokenData', function(data){
   console.dir(data)
   tokenData = data
+  player.connect().then(success => {
+    if (success) {
+      console.log('The Web Playback SDK successfully connected to Spotify!');
+    }
+  })
+
 })
 socket.on('set-volume', function(data){
 
 })
-socket.on('get-state', function(data){
+socket.on('time-check', function(data){
+  console.log('time-check')
   player.getCurrentState().then(state => {
     console.dir(state);
+    socket.emit('player_state_changed', state) 
   });
 
+})
+socket.on('toggle-play', function(){
+  player.togglePlay().then(() => {
+    console.log('Toggled playback!');
+  });
+})
+
+socket.on('seek', function(position){
+  console.log('scrubb')
+  player.seek(position).then(() => {
+    console.log('Changed position!');
+  });
 })
 const Datastore = require('nedb');
 const db = new Datastore({ filename: path.join(app.getPath('userData'), 'main.db'), autoload: true, timestampData: true  });

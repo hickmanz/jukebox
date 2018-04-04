@@ -1,10 +1,13 @@
 var playlistShown = true;
-var currentResults = {}; 
+var windowState
+var currentResults = {};
+var recentList 
 var playerTimer
 var player = {
     volume: 0,
     currentPlaying: null,
     position: 0,
+    duration:0,
     playback: null
 }
 
@@ -17,9 +20,37 @@ $(function () {
     
     //init visual
     $(".artist-holder-row").hide();
+    $("#search-outter").hide();
+    $("#recent-outter").hide();
     $(".track-holder-row").hide();
     $(".album-holder-row").hide();
+    $(".icon-pause").hide();
 
+    $('.statusBar-holder').click(function(e) {
+        var posX = e.pageX - $(this).offset().left + 1
+        var percent = posX / $(this).width()
+        var songPosition = player.duration * percent
+        $("#statusBar-full").css('left', -100 + (percent *100) + '%');
+        player.position = songPosition
+        socket.emit('scrub', songPosition)
+    });
+
+    $(".icon-skip-forward").click(function(){
+        socket.emit('next-song')
+    })
+    $(".icon-skip-back").click(function(){
+        socket.emit('previous-song')
+    })
+    $(".icon-pause").click(function(){
+        socket.emit('pause')
+        $(".icon-pause").hide();
+        $(".icon-play").show();
+    })
+    $(".icon-play").click(function(){
+        socket.emit('play')
+        $(".icon-pause").show();
+        $(".icon-play").hide();
+    })
     searchBox.onkeyup = function (e) {
         // Clear the timeout if it has already been set.
         // This will prevent the previous task from executing
@@ -29,7 +60,7 @@ $(function () {
         // Make a new timeout set to go off in 800ms
         searchTimeout = setTimeout(function () {
             socket.emit('search', searchBox.value);
-        }, 375);
+        }, 800);
     };
 
     $('form').submit(function(){
@@ -41,6 +72,7 @@ $(function () {
     $('#track-list').on('click', 'div.add i', function() {
         var req = {};
         req.type = "addSong";
+        showtoast('Song added!')
         req.data = currentResults.tracks[this.getAttribute('data-index')];
         socket.emit('editQueue', req);
     });
@@ -50,10 +82,24 @@ $(function () {
         req.data = this.getAttribute('data-trackid');
         socket.emit('preview', req);
     });
+    $('#recent-track-list').on('click', 'div.add i', function() {
+        var req = {};
+        req.type = "addSong";
+        showtoast('Song added!')
+        req.data = recentList[this.getAttribute('data-index')].track;
+        socket.emit('editQueue', req);
+    });
+    $('#recent-track-list').on('click', 'div.preview i', function(e) {
+        var req = {};
+        req.type = "previewSong";
+        req.data = this.getAttribute('data-trackid');
+        socket.emit('preview', req);
+    });
     socket.on('test',function(data){
         console.dir(data);
     });
     socket.on('updateQueue', function(queue){
+        console.dir(queue)
         $(".queue").empty();
         for (var i=0; i < queue.length; i++) {
             var li = $("<li />");
@@ -65,16 +111,19 @@ $(function () {
     socket.on('update-player', function(data){
         //check if song is the same
         if(player.currentPlaying !== null){
-            if(player.currentPlaying.id == data.currentPlaying.id){
-                player = data
-                updatePlayerTime()
-                //same song so dont update pics and stuff
-                //update time
-            } else {
-                player = data
-                updatePlayer()
-                updatePlayerTime()
-                //uodate all
+            if(data.currentPlaying !== null){
+                if(player.currentPlaying.id == data.currentPlaying.id){
+                    player = data
+                    updatePlayerTime()
+                    //same song so dont update pics and stuff
+                    //update time
+                } else {
+                    player = data
+                    updatePlayer()
+                    updatePlayerTime()
+                    //uodate all
+                }
+
             }
         } else {
             player = data
@@ -82,6 +131,31 @@ $(function () {
             updatePlayerTime()
             //uodate all
             //update all
+        }
+        if(player.state == "playing"){
+            $(".icon-pause").show();
+            $(".icon-play").hide();
+        } else {
+            $(".icon-pause").hide();
+            $(".icon-play").show();
+        }
+    })
+    socket.on('recently-played', function(data){
+        var tracks = data.body.items;
+        recentList = tracks
+
+        $("#recent-track-list").empty();
+
+        $(".track-holder-row").show();
+
+        var div = $("<li />");
+        div.html('<li class="track-row top-row"><div class="add"></div><div class="preview"></div><div class="title">TITLE</div><div class="artist">ARTIST</div><div class="album">ALBUM</div><div class="duration"><i class="icon-clock"></i></div><div class="popularity"><i class="icon-heart"></i></div></li>');
+        $("#recent-track-list").append(div);
+        console.dir(tracks)
+        for (var i=0; i < tracks.length; i++) {
+            var li = $("<li />");
+            li.html(getTrackDiv(tracks[i].track, i));
+            $("#recent-track-list").append(li);
         }
     })
     socket.on('artistSrchResp',function(data){
@@ -153,16 +227,29 @@ $(function () {
             div.html(getAlbumDiv(albums[k]));
             $("#album-holder-inner").append(div);
         }
-        console.dir(data);
     });
     socket.on('previewData', function(trackData){
-        console.dir(trackData)
-
         var a = new Audio(trackData.body.tracks[0].preview_url);
         a.play();
     })
     $('#search').click(function () { // When arrow is clicked
-        showSearch();
+        if (playlistShown == true){
+            showSearch()
+        } else if (windowState == "search"){
+            showPlaylist()
+        } else {
+            showSearch()
+        }
+    });
+    $('#recent').click(function () { // When arrow is clicked
+        socket.emit('get-recently-played')
+        if (playlistShown == true){
+            showRecent()
+        } else if (windowState == "recent"){
+            showPlaylist()
+        } else {
+            showRecent()
+        }
     });
     $('.current-song-content').click(function () { // When arrow is clicked
         if(playlistShown == false){
@@ -190,7 +277,7 @@ $(function () {
         }
     });
     $( "#sortable" ).disableSelection();
-});
+
 
 function updatePlayer(){
     if(player.currentPlaying == null){
@@ -210,18 +297,16 @@ function updatePlayer(){
                 artists += player.currentPlaying.artists[i].name
             }
         }
-        console.log('updating player')
         $('.current-song-background').css('background-image', 'url(' + imageUrl + ')');
         $(".current-song-content .artwork").attr('src', imageUrl);
         $(".current-song-content .song-name").text(player.currentPlaying.name)
         $(".current-song-content .song-artist").text(artists)
-        $("#endTime").text(msToTime(player.currentPlaying.duration_ms))
+        $("#endTime").text(msToTime(player.duration))
     }
 }
 function updatePlayerTime(){
     clearInterval(playerTimer)
-    player.position = player.playback.position
-    if (!player.playback.paused){
+    if (player.state == "playing"){
         playerTimer = setInterval(function(){  updateStatusBar() }, 500);
     }     
 }
@@ -229,9 +314,8 @@ function updateStatusBar(){
     player.position += 500
     var percentFinished
     var startTime
-    percentFinished = -100 + (( player.position/player.currentPlaying.duration_ms ) * 100)
+    percentFinished = -100 + (( player.position/player.duration ) * 100)
     startTime = msToTime(player.position)
-    console.log(startTime)
     $("#currentTime").text(startTime)
     $("#statusBar-full").css('left', percentFinished + '%');
 
@@ -256,12 +340,24 @@ function msToTime(duration) {
     }
 }
 function showSearch() {
+    windowState = "search"
+    $("#search-outter").show();
+    $("#recent-outter").hide();
+    $(".menu-expand-holder").addClass("expand");
+    $(".current-song-holder").addClass("collapse");
+    searchBox.focus()
+    playlistShown = false;
+}
+function showRecent() {
+    windowState = "recent"
+    $("#search-outter").hide();
+    $("#recent-outter").show();
     $(".menu-expand-holder").addClass("expand");
     $(".current-song-holder").addClass("collapse");
     playlistShown = false;
 }
-
 function showPlaylist() {
+    windowState == "playlist"
     $(".menu-expand-holder").removeClass("expand");
     $(".current-song-holder").removeClass("collapse");
     playlistShown = true;
@@ -340,3 +436,69 @@ function getPlaylistDiv(data){
                     </div>
                 </div>`;
 }
+
+function ToastBuilder(options) {
+    // options are optional
+    var opts = options || {};
+    
+    // setup some defaults
+    opts.defaultText = opts.defaultText || 'default text';
+    opts.displayTime = opts.displayTime || 3000;
+    opts.target = opts.target || 'body';
+  
+    return function (text) {
+      $('<div/>')
+        .addClass('toast')
+        .prependTo($(opts.target))
+        .text(text || opts.defaultText)
+        .queue(function(next) {
+          $(this).css({
+            'opacity': 1
+          });
+          var bottomOffset = 15;
+          $('.toast').each(function() {
+            var $this = $(this);
+            var height = $this.outerHeight();
+            var offset = 8;
+            $this.css('bottom', bottomOffset + 'px');
+  
+            bottomOffset += height + offset;
+          });
+          next();
+        })
+        .delay(opts.displayTime)
+        .queue(function(next) {
+          var $this = $(this);
+          var width = $this.outerWidth() + 20;
+          $this.css({
+            'right': '-' + width + 'px',
+            'opacity': 0
+          });
+          next();
+        })
+        .delay(600)
+        .queue(function(next) {
+          $(this).remove();
+          next();
+        });
+    };
+  }
+  
+  // customize it with your own options
+  var myOptions = {
+    defaultText: 'Toast, yo!',
+    displayTime: 3000,
+    target: '.content-holder'
+  };
+    //position: 'top right',   /* TODO: make this */
+    //bgColor: 'rgba(0,0,0,0.5)', /* TODO: make this */
+  
+  // to get it started, instantiate a copy of
+  // ToastBuilder passing our custom options
+  var showtoast = new ToastBuilder(myOptions);
+  
+  // now you can fire off a toast just calling
+  // our new instance passing a string, like this:
+  // showtoast('hello, world!');
+  
+});
