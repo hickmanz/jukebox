@@ -1,0 +1,142 @@
+<html>
+<head>
+  
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Zaqify</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!--FAVICONS-->
+
+    <!--SCRIPTS-->
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/spotify-web-api-js@1.1.0/src/spotify-web-api.min.js"> </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.slim.js"></script>
+    <script type="text/javascript" src="/js/main.js"> </script>
+
+    <!--STYLES-->
+    <link href="/styles/main.css" rel="stylesheet" type="text/css" />
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:100,200,300,400,500,600,700" rel="stylesheet">
+</head>
+<body>
+<div class="main">
+    <div class="menu-holder">
+        <div class="logo-holder">
+            <i class="icon-spotify"></i> ZAQIFY
+        </div>    
+        <div class="menu-main-holder">
+            <ul>
+                <li id="search">
+                    Search <i class="icon-search"></i>
+                </li>
+                <li id="playlists" style="display:none">
+                    Playlists
+                </li>
+                <li id="recent">
+                    Recently Played
+                </li>
+                <li id="browse"  style="display:none">
+                        Youtube
+                </li>
+            </ul>
+        </div>
+        <div class="settings-holder">
+            <div class="settings-content"> 
+                <i class="icon-cog"></i> Settings
+           </div>
+        </div>
+    </div>
+    
+    <div class="activity-holder">
+        <h1>ACTIVITY</h1>
+    </div>
+
+    <div class="content-holder">
+        <div class="content-holder-inner">
+            <div class="menu-expand-holder">
+                <div id="search-outter">
+                    <div class="search-content-holder">
+                        <div class="search-bar">
+                            <input type="text" id="query" value="" class="form-control" placeholder="Search"/> 
+                        </div>
+                        <div class="track-holder-row">
+                            <h1> Songs </h1>
+                            <ul id="track-list">
+                            </ul>
+                        </div>
+                        <div class="artist-holder-row">
+                            <h1> Artists </h1>
+                            <div id="artist-holder-inner">
+                            </div>
+                        </div>
+                        <div class="album-holder-row">
+                            <h1> Albums </h1>
+                            <div id="album-holder-inner">
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <div id="recent-outter">
+                    <div class="recent-content-holder">
+                        <div class="track-holder-row">
+                            <h1> Songs </h1>
+                            <ul id="recent-track-list">
+                            </ul>
+                        </div>    
+                    </div>
+                </div>
+            </div>
+            <div class="current-song-holder">
+                <div class="current-song-background">
+                </div>
+                <div class="current-song-content">
+                        <img class="artwork"src="https://i.scdn.co/image/ae66cbcb48eb496ef4bf6bc38b604e850d2ed68d"/>
+                    <div class="details">
+                        <div class="description">
+                            <div class="song-name">
+                                80's Film
+                            </div>
+                            <div class="song-artist">
+                                Jon Bellion
+                            </div>
+                        </div>
+                        <div class="control-status">
+                            <div class='play-status'>
+                                <div id="currentTime">
+                                    0:00
+                                </div>
+                                <div class="statusBar-holder">
+                                    <div class="statusBar-empty">
+                                    </div>
+                                    <div id="statusBar-full">
+                                        <div id="dragDot"></div>
+                                    </div>
+                                </div>
+                                <div id="endTime">
+                                    0:00
+                                </div>
+                            </div>
+                            <div class="controls-holder">
+                                <div class="controls">
+                                    <i class="icon-skip-back"> </i>
+                                    <i class="icon-play"> </i>
+                                    <i class="icon-pause"> </i>
+                                    <i class="icon-skip-forward"> </i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="playlist-holder">
+                <h1> UP NEXT </h1>
+                <ul id="sortable" class="playlist queue">
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
